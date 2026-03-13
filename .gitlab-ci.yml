@@ -82,10 +82,6 @@ unit-tests:
   needs: [composer-install]
   script:
     - php vendor/bin/phpunit tests/ --exclude-group=contract --testdox
-  artifacts:
-    reports:
-      junit: test-results/junit.xml
-    when: always
 
 # ─────────────────────────────────────────────────────────────────────────────
 # STAGE: pact-verify
