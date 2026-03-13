@@ -158,29 +158,23 @@ can-i-deploy:
 # STAGE: deploy
 # ─────────────────────────────────────────────────────────────────────────────
 deploy-production:
-  stage: deploy
-  needs: [can-i-deploy]
-  image: alpine:latest
-  before_script: []
-  script:
-    - echo "Deploying ProductService ${APP_VERSION} to production..."
-    # ── Replace below with your real deploy command ──────────────────────────
-    # - kubectl set image deployment/product-service app=registry.example.com/product-service:${APP_VERSION}
-    # - helm upgrade product-service ./charts/product-service --set image.tag=${APP_VERSION}
-    - echo "Deploy complete."
-  environment:
-    name: production
-  after_script:
-    # Record this provider version as deployed — consumers' can-i-deploy
-    # checks will now reference this version as the production baseline
-    - |
-      docker run --rm pactfoundation/pact-cli:latest \
-        pact-broker record-deployment \
-          --pacticipant="${PROVIDER_NAME}" \
-          --version="${APP_VERSION}" \
-          --environment=production \
-          --broker-base-url="${PACT_BROKER_BASE_URL}" \
-          --broker-username="${PACT_BROKER_USERNAME}" \
-          --broker-password="${PACT_BROKER_PASSWORD}"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    stage: deploy
+    needs: [can-i-deploy]
+    image: pactfoundation/pact-cli:latest
+    before_script: []
+    script:
+        - echo "Deploying ProductService ${APP_VERSION} to production..."
+        # kubectl set image deployment/product-service ...
+        - echo "Deploy complete."
+        - |
+            pact-broker record-deployment \
+              --pacticipant="${PROVIDER_NAME}" \
+              --version="${APP_VERSION}" \
+              --environment=production \
+              --broker-base-url="${PACT_BROKER_BASE_URL}" \
+              --broker-username="${PACT_BROKER_USERNAME}" \
+              --broker-password="${PACT_BROKER_PASSWORD}"
+    environment:
+        name: production
+    rules:
+        - if: '$CI_COMMIT_BRANCH == "main"'
