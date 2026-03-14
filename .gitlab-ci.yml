@@ -103,9 +103,9 @@ pact-verify:
     needs: [unit-tests]
     script:
         - mkdir -p var/cache var/log
-        - php -S 0.0.0.0:8002 -t public/ &
+        - APP_ENV=dev php -S 0.0.0.0:8002 -t public/ > /tmp/php-server.log 2>&1 &
         - sleep 5
-        - curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:8002/api/products/health
+        - curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:8002/api/products/health || (cat /tmp/php-server.log && exit 1)
         - |
             PROVIDER_BASE_URL="http://localhost:8002" \
             PACT_BROKER_URL="${PACT_BROKER_BASE_URL}" \

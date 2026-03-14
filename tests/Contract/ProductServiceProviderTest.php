@@ -40,6 +40,7 @@ class ProductServiceProviderTest extends TestCase
 
     /**
      * @throws InvalidVerifierHandleException
+     * @group contract
      */
     public function testProviderHonoursConsumerContracts(): void
     {
