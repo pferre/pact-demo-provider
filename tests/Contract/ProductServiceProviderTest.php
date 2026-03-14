@@ -44,12 +44,12 @@ class ProductServiceProviderTest extends TestCase
     public function testProviderHonoursConsumerContracts(): void
     {
         // ── Resolve env vars ──────────────────────────────────────────────
-        $brokerUrl       = $_ENV['PACT_BROKER_URL']      ?? 'http://pact-broker:9292';
-        $brokerUser      = $_ENV['PACT_BROKER_USERNAME'] ?? 'pact';
-        $brokerPass      = $_ENV['PACT_BROKER_PASSWORD'] ?? 'pact';
-        $providerUrl     = $_ENV['PROVIDER_BASE_URL']    ?? 'http://provider:80';
-        $providerBranch  = $_ENV['CI_COMMIT_REF_NAME']   ?? 'main';
-        $providerVersion = $_ENV['APP_VERSION']          ?? ('local-' . date('YmdHis'));
+        $brokerUrl = $_ENV['PACT_BROKER_BASE_URL'] ?? $_ENV['PACT_BROKER_URL'] ?? 'http://pact-broker:9292';
+        $brokerUser = $_ENV['PACT_BROKER_USERNAME'] ?? 'pact';
+        $brokerPass = $_ENV['PACT_BROKER_PASSWORD'] ?? 'pact';
+        $providerUrl = $_ENV['PROVIDER_BASE_URL'] ?? 'http://provider:80';
+        $providerBranch = $_ENV['CI_COMMIT_REF_NAME'] ?? 'main';
+        $providerVersion = $_ENV['APP_VERSION'] ?? ('local-' . date('YmdHis'));
 
         // ── Parse provider URL into host/port/scheme ──────────────────────
         $parsed = parse_url($providerUrl);
@@ -100,7 +100,7 @@ class ProductServiceProviderTest extends TestCase
 
         $this->assertTrue(
             $result,
-            "ProductService@{$providerVersion} failed to verify one or more consumer pacts."
+            "ProductService@{$providerVersion} failed to verify one or more consumer pacts.",
         );
     }
 }
